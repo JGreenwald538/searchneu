@@ -144,3 +144,4 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 export const getStaticProps: GetStaticProps = async () => {
   return { props: {} };
 };
+
