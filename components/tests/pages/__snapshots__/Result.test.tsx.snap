@@ -32,10 +32,10 @@ exports[`should render a section 1`] = `
                       </SvgMagnifyingGlass>
                     </div>
                   </div>
-                  <SearchInfoIcon>
-                    <div className=\\"SearchInfoIcon\\">
-                      <SvgInfoIcon className=\\"SearchInfoIcon__icon\\">
-                        <svg className=\\"SearchInfoIcon__icon\\" data-file-name=\\"SvgInfoIcon\\" />
+                  <SearchInfoIcon text=\\"Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase \\"studio design\\" to appear in the search results, wrap it up in quotes.\\" direction=\\"DOWN\\">
+                    <div className=\\"InfoIconTooltip\\">
+                      <SvgInfoIcon className=\\"InfoIconTooltip__icon\\">
+                        <svg className=\\"InfoIconTooltip__icon\\" data-file-name=\\"SvgInfoIcon\\" />
                       </SvgInfoIcon>
                       <Tooltip text=\\"Phrase search guarantees the exact search appears in the results. Ex. If you want the exact phrase \\"studio design\\" to appear in the search results, wrap it up in quotes.\\" direction=\\"DOWN\\">
                         <div className=\\"tooltip\\">
