@@ -1,8 +1,9 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { Section, UserInfo } from '../types';
 import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
+import DropdownArrow from '../icons/DropdownArrow.svg';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -23,7 +24,7 @@ const ClassCardWrapper = ({
         <div className="SearchResult__header--left">{headerLeft}</div>
         {headerRight}
       </div>
-      <div className="SearchResult__panel">{body}</div>
+      {body}
       {afterBody}
     </div>
   );
@@ -48,7 +49,8 @@ export const ClassCard = ({
   userInfo,
   fetchUserInfo,
 }: ClassCardType): ReactElement => {
-  const sectionsFormated: Section[] = getFormattedSections(sections);
+  const sectionsFormatted: Section[] = getFormattedSections(sections);
+  const [areSectionsHidden, setAreSectionsHidden] = useState(true);
 
   return (
     <ClassCardWrapper
@@ -66,37 +68,62 @@ export const ClassCard = ({
         </>
       }
       headerRight={<button>Unsubscribe</button>}
+      body={
+        <>
+          <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
+            <table className="SearchResult__sectionTable">
+              <thead>
+                <tr>
+                  <th>
+                    <div
+                      className="inlineBlock"
+                      data-tip="Course Reference Number"
+                    >
+                      CRN
+                    </div>
+                  </th>
+                  <th> Professors </th>
+                  <th> Meetings </th>
+                  <th> Campus </th>
+                  <th> Seats </th>
+                  {userInfo && <th> Notifications </th>}
+                </tr>
+              </thead>
+              <tbody>
+                {sectionsFormatted.map((section) => (
+                  <DesktopSectionPanel
+                    key={section.crn}
+                    section={section}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      }
       afterBody={
         <>
-          <table className="SearchResult__sectionTable">
-            <thead>
-              <tr>
-                <th>
-                  <div
-                    className="inlineBlock"
-                    data-tip="Course Reference Number"
-                  >
-                    CRN
-                  </div>
-                </th>
-                <th> Professors </th>
-                <th> Meetings </th>
-                <th> Campus </th>
-                <th> Seats </th>
-                {userInfo && <th> Notifications </th>}
-              </tr>
-            </thead>
-            <tbody>
-              {sectionsFormated.map((section) => (
-                <DesktopSectionPanel
-                  key={section.crn}
-                  section={section}
-                  userInfo={userInfo}
-                  fetchUserInfo={fetchUserInfo}
-                />
-              ))}
-            </tbody>
-          </table>
+          <div
+            className={
+              areSectionsHidden
+                ? 'SearchResult__showAll--subscriptionButton'
+                : 'SearchResult__showAll'
+            }
+            role="button"
+            tabIndex={0}
+            onClick={() => setAreSectionsHidden(!areSectionsHidden)}
+          >
+            <span>{areSectionsHidden ? 'Show sections' : 'Hide sections'}</span>
+            <DropdownArrow
+              className={
+                areSectionsHidden
+                  ? 'SearchResult__showAll--subscriptionCollapsed'
+                  : 'SearchResult__showAll--subscriptionExpanded'
+              }
+            />
+          </div>
         </>
       }
     />
