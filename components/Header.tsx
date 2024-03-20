@@ -67,10 +67,9 @@ export default function Header({
     );
   };
 
-  // Commented out until subscription page is finalized
-  // const subscriptionPage = (): void => {
-  //   router.push('/subscriptions');
-  // };
+  const subscriptionPage = (): void => {
+    router.push('/subscriptions');
+  };
 
   const termAndCampusToURLCallback = useCallback(
     (t: string, newCampus: string) => {

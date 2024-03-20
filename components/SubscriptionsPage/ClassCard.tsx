@@ -1,9 +1,11 @@
 import { ReactElement, useState } from 'react';
-import { Section, UserInfo } from '../types';
+import { Section, SubscriptionCourse, UserInfo } from '../types';
 import { LastUpdated } from '../common/LastUpdated';
 import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
+import CourseCheckBox from '../panels/CourseCheckBox';
+import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -31,13 +33,7 @@ const ClassCardWrapper = ({
 };
 
 type ClassCardType = {
-  course: {
-    subject: string;
-    classId: string;
-    name: string;
-    host: string;
-    lastUpdateTime: number;
-  };
+  course: SubscriptionCourse;
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
@@ -51,6 +47,8 @@ export const ClassCard = ({
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
+  const checked =
+    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
 
   return (
     <ClassCardWrapper
@@ -68,37 +66,52 @@ export const ClassCard = ({
       headerRight={<button>Unsubscribe</button>}
       body={
         <>
-          <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
-            <table className="SearchResult__sectionTable">
-              <thead>
-                <tr>
-                  <th>
-                    <div
-                      className="inlineBlock"
-                      data-tip="Course Reference Number"
-                    >
-                      CRN
-                    </div>
-                  </th>
-                  <th> Professors </th>
-                  <th> Meetings </th>
-                  <th> Campus </th>
-                  <th> Seats </th>
-                  {userInfo && <th> Notifications </th>}
-                </tr>
-              </thead>
-              <tbody>
-                {sectionsFormatted.map((section) => (
-                  <DesktopSectionPanel
-                    key={section.crn}
-                    section={section}
-                    userInfo={userInfo}
-                    fetchUserInfo={fetchUserInfo}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {!areSectionsHidden && (
+            <div>
+              <table className="SearchResult__sectionTable">
+                <thead>
+                  <tr>
+                    <th>
+                      <div
+                        className="inlineBlock"
+                        data-tip="Course Reference Number"
+                      >
+                        CRN
+                      </div>
+                    </th>
+                    <th> Professors </th>
+                    <th> Meetings </th>
+                    <th> Campus </th>
+                    <th> Seats </th>
+                    {userInfo && <th> Notifications </th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sectionsFormatted.map((section) => (
+                    <DesktopSectionPanel
+                      key={section.crn}
+                      section={section}
+                      userInfo={userInfo}
+                      fetchUserInfo={fetchUserInfo}
+                    />
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan={5}>New available sections</td>
+                    <td>
+                      <CourseCheckBox
+                        course={course}
+                        checked={checked}
+                        userInfo={userInfo}
+                        fetchUserInfo={fetchUserInfo}
+                      />
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          )}
         </>
       }
       afterBody={
