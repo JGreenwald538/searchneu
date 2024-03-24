@@ -22,12 +22,14 @@ interface SectionPanelProps {
   section: Section;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 interface MobileSectionPanelProps {
   section: Section;
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 }
 
 const meetsOnDay = (meeting: Meeting, dayIndex: DayOfWeek): boolean => {
@@ -77,6 +79,7 @@ export function DesktopSectionPanel({
   section,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: SectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -153,9 +156,6 @@ export function DesktopSectionPanel({
     return useMemo(() => getMeetings(s), []);
   };
 
-  const checked =
-    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
-
   return (
     <tr className="DesktopSectionPanel" key={Keys.getSectionHash(section)}>
       <td>
@@ -201,18 +201,16 @@ export function DesktopSectionPanel({
           {`${section.waitRemaining}/${section.waitCapacity} Waitlist Seats`}
         </span>
       </td>
-      {userInfo && (
-        <td>
-          <div className="DesktopSectionPanel__notifs">
-            <SectionCheckBox
-              section={section}
-              checked={checked}
-              userInfo={userInfo}
-              fetchUserInfo={fetchUserInfo}
-            />
-          </div>
-        </td>
-      )}
+      <td>
+        <div className="DesktopSectionPanel__notifs">
+          <SectionCheckBox
+            section={section}
+            userInfo={userInfo}
+            fetchUserInfo={fetchUserInfo}
+            onSignIn={onSignIn}
+          />
+        </div>
+      </td>
     </tr>
   );
 }
@@ -221,6 +219,7 @@ export function MobileSectionPanel({
   section,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: MobileSectionPanelProps): ReactElement {
   const { getSeatsClass } = useSectionPanelDetail(
     section.seatsRemaining,
@@ -258,9 +257,6 @@ export function MobileSectionPanel({
       ))
     );
   };
-
-  const checked =
-    userInfo && userInfo.sectionIds.includes(Keys.getSectionHash(section));
 
   return (
     <div className="MobileSectionPanel">
@@ -312,14 +308,12 @@ export function MobileSectionPanel({
           )}
         </div>
 
-        {userInfo && (
-          <SectionCheckBox
-            section={section}
-            checked={checked}
-            userInfo={userInfo}
-            fetchUserInfo={fetchUserInfo}
-          />
-        )}
+        <SectionCheckBox
+          section={section}
+          userInfo={userInfo}
+          fetchUserInfo={fetchUserInfo}
+          onSignIn={onSignIn}
+        />
       </div>
     </div>
   );

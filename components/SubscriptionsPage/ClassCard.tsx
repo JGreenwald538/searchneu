@@ -5,7 +5,6 @@ import { DesktopSectionPanel } from '../ResultsPage/Results/SectionPanel';
 import { getFormattedSections } from '../ResultsPage/ResultsLoader';
 import DropdownArrow from '../icons/DropdownArrow.svg';
 import CourseCheckBox from '../panels/CourseCheckBox';
-import Keys from '../Keys';
 
 type ClassCardWrapperType = {
   headerLeft: ReactElement;
@@ -37,6 +36,7 @@ type ClassCardType = {
   sections: Section[];
   userInfo: UserInfo;
   fetchUserInfo: () => void;
+  onSignIn: (token: string) => void;
 };
 
 export const ClassCard = ({
@@ -44,11 +44,16 @@ export const ClassCard = ({
   sections,
   userInfo,
   fetchUserInfo,
+  onSignIn,
 }: ClassCardType): ReactElement => {
   const sectionsFormatted: Section[] = getFormattedSections(sections);
   const [areSectionsHidden, setAreSectionsHidden] = useState(true);
-  const checked =
-    userInfo && userInfo.courseIds.includes(Keys.getClassHash(course));
+
+  const hasAtLeastOneSectionFull = (): boolean => {
+    return course.sections.some((e) => {
+      return e.seatsRemaining <= 0 && e.seatsCapacity > 0;
+    });
+  };
 
   return (
     <ClassCardWrapper
@@ -66,52 +71,54 @@ export const ClassCard = ({
       headerRight={<button>Unsubscribe</button>}
       body={
         <>
-          {!areSectionsHidden && (
-            <div>
-              <table className="SearchResult__sectionTable">
-                <thead>
-                  <tr>
-                    <th>
-                      <div
-                        className="inlineBlock"
-                        data-tip="Course Reference Number"
-                      >
-                        CRN
-                      </div>
-                    </th>
-                    <th> Professors </th>
-                    <th> Meetings </th>
-                    <th> Campus </th>
-                    <th> Seats </th>
-                    {userInfo && <th> Notifications </th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sectionsFormatted.map((section) => (
-                    <DesktopSectionPanel
-                      key={section.crn}
-                      section={section}
-                      userInfo={userInfo}
-                      fetchUserInfo={fetchUserInfo}
-                    />
-                  ))}
-                </tbody>
+          <div style={{ display: areSectionsHidden ? 'none' : 'block' }}>
+            <table className="SearchResult__sectionTable">
+              <thead>
+                <tr>
+                  <th>
+                    <div
+                      className="inlineBlock"
+                      data-tip="Course Reference Number"
+                    >
+                      CRN
+                    </div>
+                  </th>
+                  <th> Professors </th>
+                  <th> Meetings </th>
+                  <th> Campus </th>
+                  <th> Seats </th>
+                  <th> Notifications </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sectionsFormatted.map((section) => (
+                  <DesktopSectionPanel
+                    key={section.crn}
+                    section={section}
+                    userInfo={userInfo}
+                    fetchUserInfo={fetchUserInfo}
+                    // We don't really have access to onSignIn until header is added to the subscription page. Passing in a fake onSignIn
+                    onSignIn={onSignIn}
+                  />
+                ))}
+              </tbody>
+              {hasAtLeastOneSectionFull() && (
                 <tfoot>
                   <tr>
                     <td colSpan={5}>New available sections</td>
                     <td>
                       <CourseCheckBox
                         course={course}
-                        checked={checked}
                         userInfo={userInfo}
                         fetchUserInfo={fetchUserInfo}
+                        onSignIn={onSignIn}
                       />
                     </td>
                   </tr>
                 </tfoot>
-              </table>
-            </div>
-          )}
+              )}
+            </table>
+          </div>
         </>
       }
       afterBody={
