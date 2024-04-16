@@ -11,7 +11,7 @@ import Header from '../../../../components/Header';
 import macros from '../../../../components/macros';
 import EmptyResultsContainer from '../../../../components/ResultsPage/EmptyResultsContainer';
 
-import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
+// import FeedbackModal from '../../../../components/ResultsPage/FeedbackModal/FeedbackModal';
 import FilterPanel from '../../../../components/ResultsPage/FilterPanel';
 import FilterPills from '../../../../components/ResultsPage/FilterPills';
 import {
@@ -28,6 +28,7 @@ import { EMPTY_FILTER_OPTIONS } from '../../../../components/types';
 
 import LoadingContainer from '../../../../components/ResultsPage/LoadingContainer';
 import useUserInfo from '../../../../utils/useUserInfo';
+import TestimonialToast from '../../../../components/Testimonial/TestimonialToast';
 
 export default function Results(): ReactElement | null {
   const router = useRouter();
@@ -84,7 +85,8 @@ export default function Results(): ReactElement | null {
           onSignOut={onSignOut}
         />
 
-        {!macros.isMobile && <FeedbackModal />}
+        {!macros.isMobile && <TestimonialToast />}
+        {/* {!macros.isMobile && <FeedbackModal />} */}
         <div className="Results_Container">
           {!macros.isMobile && (
             <>
