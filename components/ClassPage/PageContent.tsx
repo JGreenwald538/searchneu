@@ -40,10 +40,8 @@ export default function PageContent({
           <span className="coreqHeaderCourse">{` ${subject}${classId}`}</span>
         </h2>
       ) : (
-        <div>
-          <div className="backToResults" onClick={() => router.back()}>
-            Back
-          </div>
+        <div className="backToResults" onClick={() => router.back()}>
+          Back
         </div>
       )}
       {classPageInfo && classPageInfo.class && (
